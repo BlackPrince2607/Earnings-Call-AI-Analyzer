@@ -1,5 +1,6 @@
 📊 Earnings Call AI Analyzer
-Deployed Here:https://earnings-call-summary-portal.onrender.com
+
+Deployed Here: https://earnings-call-summary-portal.onrender.com
 
 An AI-powered financial transcript analyzer that extracts structured insights from earnings call PDFs using Large Language Models.
 
@@ -131,7 +132,7 @@ uvicorn main:app --reload
 
 Open:
 
-http://127.0.0.1:8000
+https://earnings-call-summary-portal.onrender.com/
 🌐 Deployment
 
 Deployed on Render using:
