@@ -23,7 +23,7 @@ async def analyze(request: Request, file: UploadFile = File(...)):
         f.write(await file.read())
 
     text = extract_text(file_path)   # this needs extract_text defined below
-    text = text[:5000]
+    text = text[:10000]
     print("Extracted length:", len(text))
     result = analyze_transcript(text)
 
@@ -39,6 +39,7 @@ async def analyze(request: Request, file: UploadFile = File(...)):
     return templates.TemplateResponse(
         "result.html",
         {
+            "filename": file.filename,
             "request": request,
             "data": result
         }

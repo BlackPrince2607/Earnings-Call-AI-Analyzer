@@ -8,40 +8,53 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 def analyze_transcript(text):
 
     prompt = f"""
-You are a financial research analyst.
+    You are a senior equity research analyst.
 
-Extract structured insights from the transcript below.
+    Your task is to carefully extract structured insights from the earnings call transcript.
 
-Return ONLY valid JSON in this format:
+    IMPORTANT:
+    - Read the entire transcript carefully.
+    - Extract as much relevant financial and operational insight as possible.
+    - Avoid returning empty fields unless absolutely necessary.
+    - If evidence exists but is indirect, classify cautiously instead of writing "Not Mentioned".
 
-{{
-  "management_tone": {{
-      "classification": "",
-      "confidence_level": "",
-      "supporting_quotes": []
-  }},
-  "key_positives": [],
-  "key_concerns": [],
-  "forward_guidance": {{
-      "revenue": "",
-      "margin": "",
-      "capex": ""
-  }},
-  "operational_indicators": {{
-      "capacity_utilization": ""
-  }},
-  "new_growth_initiatives": []
-}}
+    Return ONLY valid JSON in the format below:
 
-Rules:
-- Do NOT infer missing information.
-- If information is not found, write "Not Mentioned".
-- Do not include any explanation outside JSON.
-- Use only evidence from the transcript.
+    {{
+    "management_tone": {{
+        "classification": "",
+        "confidence_level": "",
+        "supporting_quotes": []
+    }},
+    "key_positives": [],
+    "key_concerns": [],
+    "forward_guidance": {{
+        "revenue": "",
+        "margin": "",
+        "capex": ""
+    }},
+    "operational_indicators": {{
+        "capacity_utilization": ""
+    }},
+    "new_growth_initiatives": []
+    }}
 
-Transcript:
-{text}
-"""
+    Rules:
+    - Extract 3–5 positives if possible.
+    - Extract 3–5 concerns if possible.
+        - Use direct quotes when available.
+
+    Forward Guidance Handling:
+    - If numeric guidance is provided (%, range, revenue amount), extract it clearly.
+    - If directional guidance is provided (e.g., "expect improvement", "margin expansion", "growth next year"), summarize the direction qualitatively.
+    - Treat phrases like "expect", "outlook", "forecast", "next quarter", "next year", "should improve", "will normalize", "planned capex" as forward-looking guidance.
+    - Only write "Not Mentioned" if there is absolutely no forward-looking commentary.
+
+Never invent numbers or precision that is not explicitly stated.
+
+    Transcript:
+    {text}
+    """
 
     try:
         response = client.chat.completions.create(
