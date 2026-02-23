@@ -1,9 +1,10 @@
 import os
 import json
-from groq import Groq
+import groq
 
-# Create Groq client
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = groq.Client(
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
 def analyze_transcript(text):
 
